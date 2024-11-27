@@ -38,7 +38,7 @@ const DarkModeToggle = () => {
       className="text-white rounded-full focus:outline-none"
     >
       <i
-        className={`fas fa-fw fa-lg ${
+        className={`fas fa-fw fa-lg rounded-full  ${
           darkMode
             ? "fa-sun hover:text-yellow-400 hover:drop-shadow-[0_0_8px_rgba(255,255,0,0.8)]"
             : "fa-moon hover:text-blue-400 hover:drop-shadow-[0_0_8px_rgba(0,0,255,0.8)]"
