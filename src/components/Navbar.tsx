@@ -15,7 +15,7 @@ const Navbar = () => {
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <Link href="/" className="text-xl font-bold flex items-center">
-          <i className="fas fa-coins mr-2"></i>
+          <i className="fas fa-wallet mr-2"></i>
           CryptoTrack
         </Link>
 

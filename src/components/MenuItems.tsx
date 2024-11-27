@@ -34,15 +34,54 @@ const MenuItems: React.FC<MenuItemsProps> = ({ isMobile, onClick }) => {
         </Link>
       </li>
 
-      {/* Watchlist */}
+      {/* Kryptowährungen */}
+      <li>
+        <Link
+          href="/cryptocurrencies"
+          onClick={onClick}
+          className={`${linkClass} ${getActiveClass("/cryptocurrencies")}`}
+        >
+          <i className="fas fa-coins"></i>
+          <span>Kryptowährungen</span>
+        </Link>
+      </li>
+
+      {/* Chart-/Detailseite */}
+      <li>
+        <Link
+          href="/cryptocurrencies/[coin]"
+          as="/cryptocurrencies/BTC" // Beispiel für eine Standard-Route
+          onClick={onClick}
+          className={`${linkClass} ${getActiveClass(
+            "/cryptocurrencies/[coin]"
+          )}`}
+        >
+          <i className="fas fa-chart-line"></i>
+          <span>Chart-/Detailseite</span>
+        </Link>
+      </li>
+
+      {/* Watchlist (optional) */}
       <li>
         <Link
           href="/watchlist"
           onClick={onClick}
           className={`${linkClass} ${getActiveClass("/watchlist")}`}
         >
-          <i className="fas fa-star"></i>
-          <span>Watchlist</span>
+          <i className="fas fa-eye"></i>
+          <span>Watchlist (opt)</span>
+        </Link>
+      </li>
+
+      {/* News (optional) */}
+      <li>
+        <Link
+          href="/news"
+          onClick={onClick}
+          className={`${linkClass} ${getActiveClass("/news")}`}
+        >
+          <i className="fas fa-newspaper"></i>
+          <span>News (opt)</span>
         </Link>
       </li>
 
