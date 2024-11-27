@@ -10,48 +10,59 @@ interface MenuItemsProps {
 const MenuItems: React.FC<MenuItemsProps> = ({ isMobile, onClick }) => {
   const router = useRouter();
 
-  const linkClass = "block flex items-center space-x-2";
+  // Definiert die Styling-Klassen für jeden Link
+  const linkClass = "flex items-center space-x-2 text-lg hover:text-gray-300"; // Einheitliche Zentrierung
   const containerClass = isMobile
-    ? "flex flex-col p-4 space-y-2"
-    : "hidden md:flex items-center space-x-4";
+    ? "flex flex-col items-center p-4 space-y-4" // Zentriert für mobile Ansicht
+    : "hidden md:flex items-center space-x-6"; // Horizontal für Desktop-Ansicht
 
+  // Dynamische Klasse für aktive Links
   const getActiveClass = (path: string) =>
-    router.pathname === path ? "text-blue-400" : "hover:text-gray-300";
+    router.pathname === path ? "text-blue-400" : "";
 
   return (
     <ul className={containerClass}>
+      {/* Home */}
       <li>
         <Link
           href="/"
-          className={`${linkClass} ${getActiveClass("/")}`}
           onClick={onClick}
+          className={`${linkClass} ${getActiveClass("/")}`}
         >
           <i className="fas fa-home"></i>
-          <span className="leading-none">Home</span>
+          <span>Home</span>
         </Link>
       </li>
+
+      {/* Watchlist */}
       <li>
         <Link
           href="/watchlist"
-          className={`${linkClass} ${getActiveClass("/watchlist")}`}
           onClick={onClick}
+          className={`${linkClass} ${getActiveClass("/watchlist")}`}
         >
           <i className="fas fa-star"></i>
-          <span className="leading-none">Watchlist</span>
+          <span>Watchlist</span>
         </Link>
       </li>
+
+      {/* About */}
       <li>
         <Link
           href="/about"
-          className={`${linkClass} ${getActiveClass("/about")}`}
           onClick={onClick}
+          className={`${linkClass} ${getActiveClass("/about")}`}
         >
           <i className="fas fa-info-circle"></i>
-          <span className="leading-none">About</span>
+          <span>About</span>
         </Link>
       </li>
+
+      {/* DarkModeToggle */}
       <li>
-        <DarkModeToggle />
+        <div className="flex justify-center">
+          <DarkModeToggle />
+        </div>
       </li>
     </ul>
   );
