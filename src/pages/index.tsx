@@ -8,6 +8,7 @@ interface Coin {
   current_price: number;
   market_cap: number;
   price_change_percentage_24h: number;
+  image: string; // URL des Icons
 }
 
 const Home = () => {
@@ -38,6 +39,7 @@ const Home = () => {
           price={coin.current_price}
           marketCap={coin.market_cap}
           change={coin.price_change_percentage_24h}
+          image={coin.image} // Icon hinzufügen
         />
       ))}
     </div>

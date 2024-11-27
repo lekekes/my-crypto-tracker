@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
+/*
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -9,4 +10,10 @@ export default async function handler(
   );
   const data = await response.json();
   res.status(200).json(data);
+}
+*/
+import mockCoins from "@/mockData/coins.json"; // Import der Mock-Daten
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  res.status(200).json(mockCoins); // Mock-Daten als Antwort zurückgeben
 }
