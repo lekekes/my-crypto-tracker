@@ -1,17 +1,11 @@
 import { useState } from "react";
 
 const Watchlist = () => {
-  const [watchlist, setWatchlist] = useState<string[]>([
-    "Bitcoin",
-    "Ethereum",
-    "Cardano",
-  ]);
+  const [watchlist] = useState<string[]>(["Bitcoin", "Ethereum", "Cardano"]); // `setWatchlist` entfernt
 
   return (
     <div className="p-4 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">
-        Detailansicht für einzelne Währungen
-      </h1>
+      <h1 className="text-2xl font-bold mb-4">Detailansicht für Währungen</h1>
       {watchlist.length > 0 ? (
         <ul className="list-disc list-inside">
           {watchlist.map((coin, index) => (

@@ -1,3 +1,5 @@
+import Image from "next/image"; // Importiere das Next.js Image-Modul
+
 interface CryptoCardProps {
   name: string;
   symbol: string;
@@ -19,8 +21,14 @@ const CryptoCard: React.FC<CryptoCardProps> = ({
 
   return (
     <div className="p-4 border rounded-lg shadow-md flex items-center space-x-4">
-      {/* Coin Icon */}
-      <img src={image} alt={`${name} logo`} className="w-12 h-12" />
+      {/* Optimiertes Bild */}
+      <Image
+        src={image}
+        alt={`${name} logo`}
+        width={48} // Größe des Icons
+        height={48}
+        className="rounded-full" // Optional: Rundes Bild
+      />
 
       {/* Coin Details */}
       <div>
@@ -34,7 +42,6 @@ const CryptoCard: React.FC<CryptoCardProps> = ({
             isPositive ? "text-green-600" : "text-red-600"
           }`}
         >
-          {/* Icon für Trend */}
           <i
             className={`fas ${
               isPositive ? "fa-arrow-trend-up" : "fa-arrow-trend-down"
