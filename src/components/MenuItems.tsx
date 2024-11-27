@@ -11,14 +11,14 @@ const MenuItems: React.FC<MenuItemsProps> = ({ isMobile, onClick }) => {
   const router = useRouter();
 
   // Definiert die Styling-Klassen für jeden Link
-  const linkClass = "flex items-center space-x-2 text-lg hover:text-gray-300"; // Einheitliche Zentrierung
+  const linkClass = "flex items-center space-x-2 text-lg hover:text-yellow-300"; // Einheitliche Zentrierung
   const containerClass = isMobile
     ? "flex flex-col items-center p-4 space-y-4" // Zentriert für mobile Ansicht
     : "hidden md:flex items-center space-x-6"; // Horizontal für Desktop-Ansicht
 
   // Dynamische Klasse für aktive Links
   const getActiveClass = (path: string) =>
-    router.pathname === path ? "text-blue-400" : "";
+    router.pathname === path ? "text-yellow-400" : "";
 
   return (
     <ul className={containerClass}>
