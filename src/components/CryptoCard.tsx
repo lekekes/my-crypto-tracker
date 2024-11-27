@@ -15,6 +15,8 @@ const CryptoCard: React.FC<CryptoCardProps> = ({
   change,
   image,
 }) => {
+  const isPositive = change >= 0;
+
   return (
     <div className="p-4 border rounded-lg shadow-md flex items-center space-x-4">
       {/* Coin Icon */}
@@ -27,8 +29,18 @@ const CryptoCard: React.FC<CryptoCardProps> = ({
         </h2>
         <p>Price: ${price.toFixed(2)}</p>
         <p>Market Cap: ${marketCap.toLocaleString()}</p>
-        <p className={change >= 0 ? "text-green-600" : "text-red-600"}>
-          24h Change: {change.toFixed(2)}%
+        <p
+          className={`flex items-center space-x-2 ${
+            isPositive ? "text-green-600" : "text-red-600"
+          }`}
+        >
+          {/* Icon für Trend */}
+          <i
+            className={`fas ${
+              isPositive ? "fa-arrow-trend-up" : "fa-arrow-trend-down"
+            }`}
+          ></i>
+          <span>24h Change: {change.toFixed(2)}%</span>
         </p>
       </div>
     </div>
