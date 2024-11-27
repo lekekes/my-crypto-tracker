@@ -14,7 +14,8 @@ const Navbar = () => {
     <nav className="bg-gray-800 text-white p-4 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
-        <Link href="/" className="text-xl font-bold">
+        <Link href="/" className="text-xl font-bold flex items-center">
+          <i className="fas fa-coins mr-2"></i>
           CryptoTrack
         </Link>
 
