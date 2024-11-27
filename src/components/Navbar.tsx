@@ -7,7 +7,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
-    setIsMenuOpen((prev) => !prev);
+    setIsMenuOpen(!isMenuOpen);
   };
 
   return (
@@ -29,19 +29,10 @@ const Navbar = () => {
         <MenuItems />
       </div>
 
-      {/* Mobile Menu with Animation */}
-      {/* Overlay */}
+      {/* Mobile Menu */}
       <div
-        className={`fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 md:hidden ${
-          isMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-        onClick={() => setIsMenuOpen(false)} // Klick auf Overlay schließt das Menü
-      ></div>
-
-      {/* Slide-In Mobile Menu */}
-      <div
-        className={`fixed top-0 right-0 w-3/4 h-full bg-teal-800 shadow-lg transform transition-transform duration-300 md:hidden ${
-          isMenuOpen ? "translate-x-0" : "translate-x-full"
+        className={`md:hidden bg-teal-800 mt-2 rounded-lg shadow-lg overflow-hidden transition-all duration-300 ${
+          isMenuOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <MenuItems isMobile onClick={() => setIsMenuOpen(false)} />
