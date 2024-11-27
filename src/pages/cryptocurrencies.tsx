@@ -40,7 +40,7 @@ const Cryptocurrencies = () => {
             </div>
             <a
               href={`/cryptocurrencies/${coin.symbol}`}
-              className="underline ml-4"
+              className="text-blue-500 underline ml-4"
             >
               Details
             </a>
