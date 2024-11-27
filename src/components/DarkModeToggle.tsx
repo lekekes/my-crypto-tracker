@@ -33,7 +33,10 @@ const DarkModeToggle = () => {
   };
 
   return (
-    <button onClick={toggleDarkMode} className="text-white focus:outline-none">
+    <button
+      onClick={toggleDarkMode}
+      className="text-white rounded-full focus:outline-none"
+    >
       <i
         className={`fas fa-fw fa-lg ${
           darkMode
