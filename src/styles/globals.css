@@ -19,3 +19,17 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+:root {
+  --mock-background: #ffffff; /* Standardhell für Mock-DIVs */
+  --mock-shadow: rgba(0, 0, 0, 0.1); /* Standard Shadow */
+}
+
+.dark {
+  --mock-background: #2e2e30; /* Dunkler Hintergrund für Mock-DIVs im Dark Mode */
+}
+
+.mock-box {
+  background-color: var(--mock-background);
+  box-shadow: 0 4px 6px var(--mock-shadow);
+  border-radius: 0.5rem;
+}

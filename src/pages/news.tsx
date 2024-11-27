@@ -15,18 +15,15 @@ const News = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen p-6">
       <h1 className="text-3xl font-bold mb-6">Krypto-Nachrichten</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {dummyNews.map((news) => (
-          <div
-            key={news.id}
-            className="p-4 bg-white shadow rounded-lg flex flex-col"
-          >
+          <div key={news.id} className="p-4 mock-box">
             <h2 className="font-semibold text-lg mb-2">{news.title}</h2>
-            <p className="text-gray-500 mb-4">{news.description}</p>
-            <p className="text-sm text-gray-400">{news.date}</p>
+            <p className="mb-4">{news.description}</p>
+            <p className="text-sm">{news.date}</p>
           </div>
         ))}
       </div>

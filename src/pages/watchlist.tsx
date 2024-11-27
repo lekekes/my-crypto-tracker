@@ -19,11 +19,11 @@ const Watchlist = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen p-6">
       <h1 className="text-3xl font-bold mb-6">Meine Watchlist</h1>
 
       {watchlist.length === 0 ? (
-        <p className="text-gray-500 text-lg">
+        <p className="text-lg">
           Deine Watchlist ist leer. Füge Kryptowährungen hinzu, um sie hier zu
           sehen.
         </p>
@@ -32,14 +32,14 @@ const Watchlist = () => {
           {watchlist.map((coin) => (
             <div
               key={coin.id}
-              className="p-4 bg-white shadow rounded-lg flex justify-between items-center"
+              className="p-4 mock-box flex justify-between items-center"
             >
               <div>
                 <h2 className="font-semibold text-lg">{coin.name}</h2>
-                <p className="text-gray-500">{coin.symbol}</p>
+                <p>{coin.symbol}</p>
               </div>
               <div>
-                <p className="text-green-600 font-bold">{coin.price}</p>
+                <p className="font-bold">{coin.price}</p>
                 <p className="text-sm">{coin.change}</p>
               </div>
               <button

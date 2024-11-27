@@ -8,19 +8,19 @@ const CryptocurrencyDetail = () => {
   const currencyCoin = Array.isArray(coin) ? coin[0] : coin;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen p-6">
       <h1 className="text-3xl font-bold mb-6">
         Details für {currencyCoin ? currencyCoin.toUpperCase() : "Währung"}
       </h1>
 
-      <div className="p-6 bg-white shadow rounded-lg">
+      <div className="p-6 mock-box">
         <h2 className="font-semibold text-lg">Chart</h2>
-        <div className="bg-gray-200 h-64 rounded-lg flex items-center justify-center">
+        <div className="h-64 rounded-lg flex items-center justify-center mock-box">
           <p>Interaktiver Chart für {currencyCoin}</p>
         </div>
       </div>
 
-      <div className="mt-6 p-6 bg-white shadow rounded-lg">
+      <div className="mt-6 p-6 mock-box">
         <h2 className="font-semibold text-lg">Details</h2>
         <ul className="list-disc ml-4 mt-2">
           <li>Preis: $30,000</li>
