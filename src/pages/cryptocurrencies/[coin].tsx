@@ -15,7 +15,7 @@ const CryptocurrencyDetail = () => {
 
       <div className="p-6 mock-box">
         <h2 className="font-semibold text-lg">Chart</h2>
-        <div className="h-64 rounded-lg flex items-center justify-center shadow-none border border-gray-300 mock-box">
+        <div className="h-64 rounded-lg flex items-center justify-center chart-box mock-box">
           <p>Interaktiver Chart für {currencyCoin}</p>
         </div>
       </div>

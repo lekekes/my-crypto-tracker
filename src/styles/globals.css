@@ -33,3 +33,8 @@ body {
   box-shadow: 0 4px 6px var(--mock-shadow);
   border-radius: 0.5rem;
 }
+
+.chart-box {
+  box-shadow: none !important;
+  border: 1px solid lightgrey;
+}
