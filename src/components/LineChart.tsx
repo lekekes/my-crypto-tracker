@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Chart as ChartJS,
   LineElement,
@@ -8,8 +8,8 @@ import {
   Title,
   Tooltip,
   Legend,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
+} from "chart.js";
+import { Line } from "react-chartjs-2";
 
 ChartJS.register(
   LineElement,
@@ -18,14 +18,15 @@ ChartJS.register(
   PointElement,
   Title,
   Tooltip,
-  Legend,
+  Legend
 );
 
 interface LineChartProps {
   coinId: string;
 }
+type PricePoint = { date: string; value: number };
 
-const CACHE_KEY = 'chartDataCache';
+const CACHE_KEY = "chartDataCache";
 const CACHE_DURATION = 30 * 60 * 1000;
 
 export default function LineChart({ coinId }: LineChartProps) {
@@ -51,24 +52,26 @@ export default function LineChart({ coinId }: LineChartProps) {
 
       try {
         const response = await fetch(
-          `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=365&interval=daily`,
+          `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=365&interval=daily`
         );
         const data = await response.json();
 
-        const prices = data.prices.map((price: number[]) => ({
-          date: new Date(price[0]).toLocaleDateString(),
-          value: price[1],
-        }));
+        const prices: PricePoint[] = data.prices.map(
+          (price: [number, number]) => ({
+            date: new Date(price[0]).toLocaleDateString(),
+            value: price[1],
+          })
+        );
 
         const formattedData = {
-          labels: prices.map((p) => p.date),
+          labels: prices.map((p: PricePoint) => p.date),
           datasets: [
             {
-              label: 'Preis (USD)',
-              data: prices.map((p) => p.value),
+              label: "Preis (USD)",
+              data: prices.map((p: PricePoint) => p.value),
               fill: true,
-              backgroundColor: 'rgba(75, 192, 192, 0.2)',
-              borderColor: 'rgba(75, 192, 192, 1)',
+              backgroundColor: "rgba(75, 192, 192, 0.2)",
+              borderColor: "rgba(75, 192, 192, 1)",
               pointRadius: 0,
               borderWidth: 2,
               tension: 0.3,
@@ -78,11 +81,11 @@ export default function LineChart({ coinId }: LineChartProps) {
 
         localStorage.setItem(
           `${CACHE_KEY}_${coinId}`,
-          JSON.stringify({ data: formattedData, timestamp: now }),
+          JSON.stringify({ data: formattedData, timestamp: now })
         );
         setChartData(formattedData);
       } catch (error) {
-        console.error('Fehler beim Abrufen der Chart-Daten:', error);
+        console.error("Fehler beim Abrufen der Chart-Daten:", error);
       } finally {
         setLoading(false);
       }
@@ -104,14 +107,14 @@ export default function LineChart({ coinId }: LineChartProps) {
         options={{
           responsive: true,
           plugins: {
-            legend: { position: 'top' },
+            legend: { position: "top" },
             tooltip: {
-              mode: 'index',
+              mode: "index",
               intersect: false,
             },
           },
           hover: {
-            mode: 'index',
+            mode: "index",
             intersect: false,
           },
           scales: {
@@ -120,16 +123,16 @@ export default function LineChart({ coinId }: LineChartProps) {
             },
             y: {
               beginAtZero: false,
-              grid: { color: 'rgba(200, 200, 200, 0.2)' },
+              grid: { color: "rgba(200, 200, 200, 0.2)" },
             },
           },
           interaction: {
-            mode: 'index',
+            mode: "index",
             intersect: false,
           },
           elements: {
             line: {
-              borderColor: 'rgba(75, 192, 192, 1)',
+              borderColor: "rgba(75, 192, 192, 1)",
             },
           },
         }}
