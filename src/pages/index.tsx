@@ -1,49 +1,85 @@
-import { useEffect, useState } from "react";
-import CryptoCard from "../components/CryptoCard";
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import CryptoCard from '@/components/CryptoCard';
 
-interface Coin {
+interface CryptoData {
   id: string;
   name: string;
   symbol: string;
   current_price: number;
-  market_cap: number;
   price_change_percentage_24h: number;
-  image: string; // URL des Icons
+  market_cap: number;
+  image: string;
+  sparkline_in_7d: { price: number[] };
 }
 
-const Home = () => {
-  const [coins, setCoins] = useState<Coin[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function Home() {
+  const [cryptoData, setCryptoData] = useState<CryptoData[]>([]);
+  const CACHE_KEY = 'cryptoDataCache';
+  const CACHE_DURATION = 30 * 60 * 1000;
 
   useEffect(() => {
-    const fetchCoins = async () => {
-      const res = await fetch("/api/coins");
-      const data = await res.json();
-      setCoins(data);
-      setLoading(false);
+    const loadData = async () => {
+      const cached = localStorage.getItem(CACHE_KEY);
+      const now = Date.now();
+
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        if (now - timestamp < CACHE_DURATION) {
+          setCryptoData(data);
+          return;
+        }
+      }
+
+      const res = await fetch(
+        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=true',
+      );
+      const data: CryptoData[] = await res.json();
+      setCryptoData(data);
+
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ data, timestamp: now }));
     };
-    fetchCoins();
+
+    loadData();
   }, []);
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-      {coins.map((coin) => (
-        <CryptoCard
-          key={coin.id}
-          name={coin.name}
-          symbol={coin.symbol}
-          price={coin.current_price}
-          marketCap={coin.market_cap}
-          change={coin.price_change_percentage_24h}
-          image={coin.image} // Icon hinzufügen
-        />
-      ))}
+    <div className="min-h-screen">
+      <div className="my-6 text-center">
+        <h1 className="text-4xl font-extrabold tracking-tight">
+          CryptoTrack - Top 10 Kryptowährungen
+        </h1>
+      </div>
+
+      <motion.div
+        className="grid grid-cols-1 gap-8 px-4 sm:grid-cols-2 lg:grid-cols-3 lg:px-20"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0, y: 50 },
+          visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+              staggerChildren: 0.2,
+              delayChildren: 0.2,
+            },
+          },
+        }}
+      >
+        {cryptoData.map((coin, index) => (
+          <motion.div
+            key={coin.id}
+            variants={{
+              hidden: { opacity: 0, y: 50 },
+              visible: { opacity: 1, y: 0 },
+            }}
+            transition={{ duration: 0.6 }}
+          >
+            <CryptoCard coin={coin} delay={index * 100} />
+          </motion.div>
+        ))}
+      </motion.div>
     </div>
   );
-};
-
-export default Home;
+}
