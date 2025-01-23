@@ -45,6 +45,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
+      <title>CryptoTrack</title>
       <div className="my-6 text-center">
         <h1 className="text-4xl font-extrabold tracking-tight">
           CryptoTrack - Top 10 Kryptowährungen

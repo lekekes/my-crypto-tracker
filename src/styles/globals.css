@@ -22,3 +22,17 @@ body {
     background-color 0.3s,
     color 0.3s; /* Weicher Übergang */
 }
+
+.fade-in-out {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    visibility 0s linear 500ms,
+    opacity 500ms;
+}
+
+.fade-in-out.visible {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 500ms;
+}

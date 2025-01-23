@@ -1,45 +1,49 @@
-import { useEffect, useRef } from "react";
-import { Chart, registerables } from "chart.js";
+import { useEffect, useRef } from 'react';
+import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
 
 interface SparklineChartProps {
   data: number[];
   id: string;
+  borderColor: string; // Farbe als Prop
 }
 
-export default function SparklineChart({ data }: SparklineChartProps) {
+export default function SparklineChart({
+  data,
+  id,
+  borderColor,
+}: SparklineChartProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
     if (!canvasRef.current) return;
 
-    const ctx = canvasRef.current.getContext("2d");
+    const ctx = canvasRef.current.getContext('2d');
     if (!ctx) {
-      console.error("CanvasRenderingContext2D is null.");
+      console.error('CanvasRenderingContext2D is null.');
       return;
     }
 
     const chart = new Chart(ctx, {
-      type: "line",
+      type: 'line',
       data: {
         labels: data.map((_, i) => {
-          const hoursAgo = 168 - i; // Gehe von den letzten 168 Stunden aus
+          const hoursAgo = 168 - i;
           const date = new Date();
           date.setHours(date.getHours() - hoursAgo);
-          return date.toLocaleString("de-DE", {
-            weekday: "short", // Zeigt den Wochentag an
-            hour: "2-digit", // Zeigt die Stunde an
-            minute: "2-digit", // Zeigt die Minute an (optional)
+          return date.toLocaleString('de-DE', {
+            weekday: 'short',
+            hour: '2-digit',
           });
         }),
         datasets: [
           {
             data,
-            borderColor: "#4caf50",
+            borderColor, // Farbe verwenden
             borderWidth: 2,
             tension: 0.3,
-            pointRadius: 0, // Keine Punkte auf der Linie
+            pointRadius: 0,
           },
         ],
       },
@@ -50,32 +54,28 @@ export default function SparklineChart({ data }: SparklineChartProps) {
           legend: { display: false },
           tooltip: {
             enabled: true,
-            intersect: false, // Tooltips funktionieren auch, wenn die Maus nicht direkt auf der Linie ist
-            mode: "index", // Tooltip folgt der X-Achse
+            intersect: false,
+            mode: 'index',
             callbacks: {
-              label: (context) => `Price: $${context.raw}`,
+              label: (context) => `Preis: $${context.raw}`,
             },
           },
         },
         interaction: {
-          mode: "index", // Interaktion entlang der X-Achse
-          intersect: false, // Keine Punkt-basierte Interaktion nötig
+          mode: 'index',
+          intersect: false,
         },
         scales: {
-          x: {
-            display: false, // X-Achse ausblenden
-          },
-          y: {
-            display: false, // Y-Achse ausblenden
-          },
+          x: { display: false },
+          y: { display: false },
         },
       },
     });
 
     return () => {
-      chart.destroy(); // Chart wird bei Unmounting entfernt
+      chart.destroy();
     };
-  }, [data]);
+  }, [data, borderColor]);
 
   return <canvas ref={canvasRef} className="h-full w-full"></canvas>;
 }

@@ -1,20 +1,25 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { FixedSizeList as List, ListChildComponentProps } from 'react-window';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faSearch,
   faSpinner,
   faArrowsAltV,
+  faStar,
 } from '@fortawesome/free-solid-svg-icons';
+import Input from '../components/Input';
+import Button from '../components/Button';
 
 interface Coin {
   id: string;
-  name: string;
   symbol: string;
+  name: string;
 }
 
 const CACHE_KEY = 'all_coins_list_cache';
 const CACHE_EXPIRATION = 30 * 60 * 1000;
+const FAVORITES_KEY = 'favoriteCoins';
+const LIST_HEIGHT = 480;
+const ITEM_SIZE = 80;
 
 export default function Coins() {
   const [coins, setCoins] = useState<Coin[]>([]);
@@ -22,8 +27,7 @@ export default function Coins() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [isScrollable, setIsScrollable] = useState(false);
-
-  const listRef = useRef<HTMLDivElement>(null);
+  const [favorites, setFavorites] = useState<string[]>([]); // Liste der favorisierten Coin-IDs
 
   useEffect(() => {
     const fetchCoins = async () => {
@@ -65,7 +69,15 @@ export default function Coins() {
       }
     };
 
+    const loadFavorites = () => {
+      const storedFavorites = JSON.parse(
+        localStorage.getItem(FAVORITES_KEY) || '[]',
+      );
+      setFavorites(storedFavorites.map((fav: { id: string }) => fav.id));
+    };
+
     fetchCoins();
+    loadFavorites();
   }, []);
 
   const handleSearch = (query: string) => {
@@ -84,12 +96,38 @@ export default function Coins() {
   };
 
   useEffect(() => {
-    if (listRef.current) {
-      const isScrollable =
-        listRef.current.scrollHeight > listRef.current.clientHeight;
-      setIsScrollable(isScrollable);
-    }
+    const maxVisibleItems = Math.floor(LIST_HEIGHT / ITEM_SIZE);
+    setIsScrollable(filteredCoins.length > maxVisibleItems);
   }, [filteredCoins]);
+
+  const handleBookmarkClick = (coin: Coin) => {
+    const storedFavorites = JSON.parse(
+      localStorage.getItem(FAVORITES_KEY) || '[]',
+    );
+
+    const isFavorite = storedFavorites.some(
+      (fav: { id: string }) => fav.id === coin.id,
+    );
+
+    let updatedFavorites;
+    if (isFavorite) {
+      updatedFavorites = storedFavorites.filter(
+        (fav: { id: string }) => fav.id !== coin.id,
+      );
+    } else {
+      updatedFavorites = [
+        ...storedFavorites,
+        { id: coin.id, name: coin.name, symbol: coin.symbol },
+      ];
+    }
+
+    localStorage.setItem(FAVORITES_KEY, JSON.stringify(updatedFavorites));
+    setFavorites(updatedFavorites.map((fav: { id: string }) => fav.id));
+  };
+
+  const handleDetailsClick = (coinId: string) => {
+    window.location.href = `/coin-details/${coinId}`;
+  };
 
   if (loading)
     return (
@@ -100,42 +138,36 @@ export default function Coins() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <title>All Coins</title>
       <h1 className="mb-6 text-3xl font-extrabold text-gray-800 dark:text-white">
         Alle Kryptowährungen
       </h1>
 
-      <div className="relative mb-6 w-full sm:w-1/2">
-        <FontAwesomeIcon
-          icon={faSearch}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400"
-        />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => handleSearch(e.target.value)}
-          placeholder="Suche nach Name oder Symbol"
-          className="w-full rounded-xl border border-gray-300 bg-white py-2 pl-10 pr-4 text-gray-800 placeholder-gray-500 shadow-sm focus:border-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:placeholder-gray-400"
-        />
-      </div>
+      <Input
+        value={searchQuery}
+        onChange={handleSearch}
+        placeholder="Suche nach Name oder Symbol"
+        className="mb-6"
+      />
 
       <div
-        ref={listRef}
-        className="relative overflow-y-auto rounded-xl border border-gray-300 shadow-lg dark:border-gray-700"
-        style={{ height: '480px' }}
+        className="relative overflow-y-auto rounded-md border border-gray-300 shadow-lg dark:border-gray-700"
+        style={{ height: `${LIST_HEIGHT}px` }}
       >
         <List
-          height={480}
+          height={LIST_HEIGHT}
           itemCount={filteredCoins.length}
-          itemSize={80}
+          itemSize={ITEM_SIZE}
           width="100%"
         >
           {({ index, style }: ListChildComponentProps) => {
             const coin = filteredCoins[index];
+            const isFavorite = favorites.includes(coin.id);
             return (
               <div
                 key={coin.id}
                 style={style}
-                className="flex justify-between border-b border-gray-300 p-4 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                className="flex items-center justify-between border-b border-gray-300 p-4 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
               >
                 <div>
                   <h2 className="text-xl font-bold">{coin.name}</h2>
@@ -143,18 +175,41 @@ export default function Coins() {
                     Symbol: {coin.symbol.toUpperCase()}
                   </p>
                 </div>
-                <p className="font-mono text-sm text-gray-500 dark:text-gray-400">
-                  ID: {coin.id}
-                </p>
+                <div className="flex items-center space-x-4">
+                  <Button
+                    onClick={() => handleDetailsClick(coin.id)}
+                    className="bg-blue-500 text-white hover:bg-blue-600"
+                  >
+                    <span className="block sm:hidden">Details</span>
+                    <span className="hidden sm:block">Details ansehen</span>
+                  </Button>
+                  <FontAwesomeIcon
+                    icon={faStar}
+                    className={`cursor-pointer text-xl ${
+                      isFavorite ? 'text-yellow-500' : 'text-gray-500'
+                    } hover:text-yellow-500`}
+                    title={
+                      isFavorite
+                        ? 'Von der Merkliste entfernen'
+                        : 'Auf Merkliste speichern'
+                    }
+                    onClick={() => handleBookmarkClick(coin)}
+                  />
+                </div>
               </div>
             );
           }}
         </List>
 
         {isScrollable && (
-          <div className="absolute bottom-4 right-4 flex items-center space-x-2 text-gray-500 dark:text-gray-400">
-            <FontAwesomeIcon icon={faArrowsAltV} />
-            <span className="text-sm">Scrollen</span>
+          <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 transform items-center space-x-2 text-gray-500 dark:text-gray-400">
+            <FontAwesomeIcon
+              icon={faArrowsAltV}
+              className="text-light-primary dark:text-dark-primary"
+            />
+            <span className="text-sm text-light-primary dark:text-dark-primary">
+              Scrollen
+            </span>
           </div>
         )}
       </div>

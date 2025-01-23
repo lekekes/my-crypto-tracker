@@ -1,58 +1,61 @@
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-
-interface Article {
-  title: string;
-  description: string;
-  url: string;
-  urlToImage: string;
-  publishedAt: string;
-}
+import React, { useState, useEffect } from 'react';
+import FilterList from '../components/news/FilterList';
+import ArticleList from '../components/news/ArticleList';
+import Button from '../components/Button';
+import Input from '../components/Input';
+import Modal from '../components/Modal';
+import Select from '@/components/Select';
 
 const FILTER_OPTIONS = [
-  "Bitcoin",
-  "Ethereum",
-  "DeFi",
-  "NFTs",
-  "Altcoins",
-  "Blockchain",
-  "Crypto",
+  'Bitcoin',
+  'Ethereum',
+  'DeFi',
+  'NFTs',
+  'Altcoins',
+  'Blockchain',
+  'Crypto',
 ];
 
 export default function News() {
-  const [articles, setArticles] = useState<Article[]>([]);
+  const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [filters, setFilters] = useState<string[]>([]);
-  const [language, setLanguage] = useState<string>("de");
+  const [language, setLanguage] = useState<string>('de');
+  const [showModal, setShowModal] = useState(false);
+  const [showSavedMessage, setShowSavedMessage] = useState(false);
 
   const fetchNews = async (queries: string[], lang: string) => {
     try {
       setLoading(true);
       setError(null);
 
-      const searchTerms = queries.length
-        ? queries.join(" OR ")
-        : "cryptocurrency";
+      const apiKey = process.env.NEWSAPI_API_KEY;
+      if (!apiKey) throw new Error('API-Schlüssel fehlt.');
+
+      const searchTerms = queries.length ? queries.join(' OR ') : 'crypto';
 
       const res = await fetch(
-        `/api/news?searchQuery=${encodeURIComponent(searchTerms)}&language=${lang}`
+        `https://newsapi.org/v2/everything?q=${encodeURIComponent(
+          searchTerms,
+        )}&sortBy=popularity&pageSize=10&language=${lang}&apiKey=${apiKey}`,
       );
-      if (!res.ok) throw new Error("Fehler beim Abrufen der Nachrichten.");
+
+      if (!res.ok) throw new Error('Fehler beim Abrufen der Nachrichten.');
 
       const data = await res.json();
       const validArticles = data.articles.filter(
-        (article: Article) =>
+        (article: any) =>
           article.title &&
           article.description &&
           article.url &&
-          article.urlToImage
+          article.urlToImage,
       );
 
       setArticles(validArticles);
     } catch (error) {
-      setError((error as Error).message || "Unbekannter Fehler.");
+      setError((error as Error).message || 'Unbekannter Fehler.');
     } finally {
       setLoading(false);
     }
@@ -61,7 +64,7 @@ export default function News() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const queries = searchQuery
-      ? searchQuery.split(",").map((q) => q.trim())
+      ? searchQuery.split(',').map((q) => q.trim())
       : [];
     fetchNews([...queries, ...filters], language);
   };
@@ -70,126 +73,125 @@ export default function News() {
     setFilters((prev) =>
       prev.includes(filter)
         ? prev.filter((f) => f !== filter)
-        : [...prev, filter]
+        : [...prev, filter],
     );
   };
 
+  const handleResetFilters = () => setShowModal(true);
+
+  const confirmResetFilters = () => {
+    setSearchQuery('');
+    setFilters([]);
+    setLanguage('de');
+    localStorage.removeItem('savedNewsSearch');
+    fetchNews([], 'de');
+    setShowModal(false);
+  };
+
+  const handleSaveSearch = () => {
+    localStorage.setItem(
+      'savedNewsSearch',
+      JSON.stringify({ searchQuery, filters, language }),
+    );
+
+    setShowSavedMessage(true);
+
+    setTimeout(() => {
+      setShowSavedMessage(false);
+    }, 2500); // Fade-out nach 2,5 Sekunden
+  };
+
   useEffect(() => {
-    fetchNews(filters, language);
-  }, [filters, language]);
+    const savedData = localStorage.getItem('savedNewsSearch');
+    if (savedData) {
+      const { searchQuery, filters, language } = JSON.parse(savedData);
+      setSearchQuery(searchQuery || '');
+      setFilters(filters || []);
+      setLanguage(language || 'de');
+      fetchNews([...filters, searchQuery].filter(Boolean), language);
+    } else {
+      fetchNews([], language);
+    }
+  }, []);
+
+  const languageOptions = [
+    { label: 'Deutsch', value: 'de' },
+    { label: 'Englisch', value: 'en' },
+  ];
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <title>News</title>
       <h1 className="mb-6 text-4xl font-extrabold text-gray-800 dark:text-white">
         Krypto-Nachrichten
       </h1>
 
-      {/* Suchformular */}
-      <motion.form
-        onSubmit={handleSearch}
-        className="mb-6 flex items-center gap-4"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-      >
-        <input
-          type="text"
+      <form onSubmit={handleSearch} className="mb-6 flex items-center gap-4">
+        <Input
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={setSearchQuery}
           placeholder="Suche (z.B. Bitcoin, Ethereum)"
-          className="flex-1 rounded-xl border border-gray-300 bg-white px-4 py-2 text-gray-800 placeholder-gray-500 shadow-sm focus:border-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:placeholder-gray-400"
         />
-        <select
+
+        <Select
+          options={languageOptions}
           value={language}
-          onChange={(e) => setLanguage(e.target.value)}
-          className="rounded-xl border border-gray-300 bg-white px-2 py-2 text-gray-800 focus:border-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
-        >
-          <option value="de">DE</option>
-          <option value="en">EN</option>
-        </select>
-        <motion.button
+          onChange={(value) => setLanguage(value)}
+          placeholder="Sprache auswählen"
+          className="w-40"
+        />
+
+        <Button
           type="submit"
-          className="rounded-xl bg-yellow-400 px-4 py-2 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          onClick={(e) => handleSearch(e)}
+          className="h-[40px] bg-yellow-400 px-4 py-2 hover:bg-yellow-500 focus:ring-yellow-300"
         >
           Suchen
-        </motion.button>
-      </motion.form>
+        </Button>
+      </form>
 
-      {/* Filter-Schaltflächen */}
-      <motion.div
-        className="mb-4 flex flex-wrap gap-2"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-      >
-        {FILTER_OPTIONS.map((filter) => (
-          <motion.button
-            key={filter}
-            onClick={() => toggleFilter(filter)}
-            className={`rounded-xl px-4 py-2 text-sm font-semibold shadow-sm transition-all duration-200 ${
-              filters.includes(filter)
-                ? "bg-yellow-400 text-white"
-                : "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
-            } hover:shadow-md`}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            {filter}
-          </motion.button>
-        ))}
-      </motion.div>
+      <FilterList
+        filters={filters}
+        options={FILTER_OPTIONS}
+        toggleFilter={toggleFilter}
+      />
 
-      {/* Nachrichten-Anzeige */}
-      {loading ? (
-        <p className="text-center text-xl">Lade Nachrichten...</p>
-      ) : error ? (
-        <p className="text-center text-xl text-red-500">Fehler: {error}</p>
-      ) : articles.length === 0 ? (
-        <p className="text-center text-xl text-gray-500">
-          Keine Nachrichten gefunden.
-        </p>
-      ) : (
-        <motion.div
-          className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: { opacity: 0 },
-            visible: {
-              opacity: 1,
-              transition: { staggerChildren: 0.2, delayChildren: 0.2 },
-            },
-          }}
+      <div className="mb-6 flex gap-4">
+        <Button
+          onClick={handleSaveSearch}
+          className="bg-green-500 hover:bg-green-600 focus:ring-green-300"
         >
-          {articles.map((article, index) => (
-            <motion.a
-              key={index}
-              href={article.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block overflow-hidden rounded-xl border border-gray-200 p-4 shadow-md hover:shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.2, duration: 0.6 }}
-            >
-              <img
-                src={article.urlToImage}
-                alt={article.title}
-                className="mb-4 h-48 w-full rounded object-cover"
-              />
-              <h2 className="mb-2 text-xl font-bold">{article.title}</h2>
-              <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">
-                {new Date(article.publishedAt).toLocaleDateString("de-DE")}
-              </p>
-              <p className="text-gray-700 dark:text-gray-300">
-                {article.description}
-              </p>
-            </motion.a>
-          ))}
-        </motion.div>
-      )}
+          Speichern
+        </Button>
+
+        <Button
+          onClick={handleResetFilters}
+          className="bg-red-500 hover:bg-red-600 focus:ring-red-400"
+        >
+          Filter löschen
+        </Button>
+      </div>
+
+      <ArticleList loading={loading} error={error} articles={articles} />
+
+      {/* Bestätigungsmeldung */}
+      <div
+        className={`fade-in-out fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 rounded-md bg-green-100 px-6 py-4 text-green-800 shadow-lg ${
+          showSavedMessage ? 'visible' : ''
+        }`}
+      >
+        Suchkriterien gespeichert!
+      </div>
+
+      <Modal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={confirmResetFilters}
+        title="Filter zurücksetzen"
+        description="Sind Sie sicher, dass Sie alle gespeicherten Filter löschen möchten?"
+        confirmText="Löschen"
+        cancelText="Abbrechen"
+      />
     </div>
   );
 }

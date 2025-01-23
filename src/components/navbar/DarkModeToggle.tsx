@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
-import { useDarkMode } from '@/context/DarkModeContext';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 
 const DarkModeToggle = () => {
   const { darkMode, toggleDarkMode } = useDarkMode();

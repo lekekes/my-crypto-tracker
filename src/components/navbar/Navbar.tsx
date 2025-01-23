@@ -53,12 +53,28 @@ const Navbar = () => {
       className="bg-gray-100 px-4 py-2 text-gray-800 shadow-md dark:bg-gray-900 dark:text-gray-100"
     >
       <div className="container mx-auto flex items-center justify-between">
-        <Logo />
-        <MenuItems />
-        <DarkModeToggle />
-        <BurgerMenu isOpen={menuOpen} onClick={toggleMenu} />
+        {/* Logo */}
+        <div className="flex flex-1">
+          <Logo />
+        </div>
+
+        {/* Navbar Items (Desktop) oder Dark Mode Toggle (Mobile) */}
+        <div className="hidden justify-center md:flex">
+          <MenuItems />
+        </div>
+
+        {/* Dark Mode Toggle */}
+        <div className="flex flex-1 justify-center md:justify-end">
+          <DarkModeToggle />
+        </div>
+
+        {/* Burger Menu (Mobile only) */}
+        <div className="flex flex-1 justify-end md:hidden">
+          <BurgerMenu isOpen={menuOpen} onClick={toggleMenu} />
+        </div>
       </div>
 
+      {/* Mobile Dropdown Menu */}
       <AnimatePresence initial={false}>
         {menuOpen && (
           <motion.div

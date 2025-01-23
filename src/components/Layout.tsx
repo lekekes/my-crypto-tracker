@@ -1,6 +1,6 @@
 import Navbar from '@/components/navbar/Navbar';
 import PageWrapper from '@/components/PageWrapper';
-import { DarkModeProvider } from '@/context/DarkModeContext';
+import { DarkModeProvider } from '@/contexts/DarkModeContext';
 
 interface LayoutProps {
   children: React.ReactNode;
