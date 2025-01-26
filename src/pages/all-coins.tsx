@@ -8,6 +8,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import Head from 'next/head';
 
 interface Coin {
   id: string;
@@ -138,7 +139,9 @@ export default function Coins() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <title>All Coins</title>
+      <Head>
+        <title>Alle Coins</title>
+      </Head>
       <h1 className="mb-6 text-3xl font-extrabold text-gray-800 dark:text-white">
         Alle Kryptowährungen
       </h1>

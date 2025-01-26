@@ -8,8 +8,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 import SparklineChart from './SparkLineChart';
-import Button from './Button';
-import Modal from './Modal'; // Importiere die Modal-Komponente
+import Button from '../Button';
+import Modal from '../Modal';
+import Image from 'next/image';
 
 interface CryptoCardProps {
   coin: {
@@ -124,10 +125,13 @@ export default function CryptoCard({
             borderColor={borderColor}
           />
         </div>
-        <img
+        <Image
           src={coin.image}
           alt={coin.name}
-          className="z-0 mb-6 h-14 w-14 rounded-full"
+          className="z-0 mb-6 rounded-full"
+          width={56} // Define the width of the image (e.g., 56px for h-14 equivalent)
+          height={56} // Define the height of the image (e.g., 56px for h-14 equivalent)
+          priority // Optional: Use this for LCP optimization if the image is above-the-fold
         />
         <h2 className="z-0 mb-2 text-2xl font-bold">
           {coin.name} ({coin.symbol.toUpperCase()})

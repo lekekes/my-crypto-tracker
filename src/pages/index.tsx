@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import CryptoCard from '@/components/CryptoCard';
+import CryptoCard from '@/components/cryptocard/CryptoCard';
+import Head from 'next/head';
 
 interface CryptoData {
   id: string;
@@ -45,7 +46,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      <title>CryptoTrack</title>
+      <Head>
+        <title>Startseite</title>
+      </Head>
       <div className="my-6 text-center">
         <h1 className="text-4xl font-extrabold tracking-tight">
           CryptoTrack - Top 10 Kryptowährungen

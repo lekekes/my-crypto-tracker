@@ -6,8 +6,47 @@ import CryptoSearch from '@/components/CryptoSearch';
 import LineChart from '@/components/coin-details/LineChart';
 import CoinStats from '@/components/coin-details/CoinStats';
 import HandelsvolumenChart from '@/components/coin-details/VolumeChart';
+import Head from 'next/head';
 
 const CACHE_DURATION = 30 * 60 * 1000; // 30 Minuten
+
+interface CoinData {
+  id: string;
+  symbol: string;
+  name: string;
+  image: string;
+  current_price: number;
+  market_cap: number;
+  market_cap_rank: number;
+  fully_diluted_valuation: number;
+  total_volume: number;
+  high_24h: number;
+  low_24h: number;
+  price_change_24h: number;
+  price_change_percentage_24h: number;
+  market_cap_change_24h: number;
+  market_cap_change_percentage_24h: number;
+  circulating_supply: number;
+  total_supply: number;
+  max_supply: number;
+  ath: number;
+  ath_change_percentage: number;
+  ath_date: string;
+  atl: number;
+  atl_change_percentage: number;
+  atl_date: string;
+  roi: Roi | null;
+  last_updated: string;
+}
+interface Roi {
+  times: number;
+  currency: string;
+  percentage: number;
+}
+interface cachedData {
+  date: string;
+  volume: number;
+}
 
 export default function CoinDetailsById() {
   const router = useRouter();
@@ -21,7 +60,7 @@ export default function CoinDetailsById() {
     symbol: string;
   } | null>(null);
 
-  const [coinData, setCoinData] = useState<any | null>(null);
+  const [coinData, setCoinData] = useState<CoinData | null>(null);
   const [volumeData, setVolumeData] = useState<
     { date: string; volume: number }[]
   >([]);
@@ -32,14 +71,16 @@ export default function CoinDetailsById() {
     }
   };
 
-  const fetchWithCache = async (key: string, fetcher: () => Promise<any>) => {
+  const fetchWithCache = async (
+    key: string,
+    fetcher: () => Promise<cachedData>,
+  ) => {
     const now = Date.now();
     const cachedData = localStorage.getItem(key);
 
     if (cachedData) {
       const { data, timestamp } = JSON.parse(cachedData);
       if (now - timestamp < CACHE_DURATION) {
-        console.log(`Daten für ${key} aus Cache geladen.`);
         return data;
       }
     }
@@ -131,7 +172,9 @@ export default function CoinDetailsById() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <title>{`Details: ${id || 'Loading...'}`}</title>
+      <Head>
+        <title>{`Details: ${id || 'Loading...'}`}</title>
+      </Head>
       <h1 className="text-4xl font-extrabold text-gray-800 dark:text-white">
         Coin Details
       </h1>

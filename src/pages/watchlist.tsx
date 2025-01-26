@@ -1,17 +1,55 @@
 import React, { useState, useEffect } from 'react';
-import CryptoCard from '../components/CryptoCard';
+import CryptoCard from '../components/cryptocard/CryptoCard';
+import Head from 'next/head';
 
 const FAVORITES_KEY = 'favoriteCoins';
+
+interface CryptoData {
+  id: string;
+  symbol: string;
+  name: string;
+  image: string;
+  current_price: number;
+  market_cap: number;
+  market_cap_rank: number;
+  fully_diluted_valuation: number;
+  total_volume: number;
+  high_24h: number;
+  low_24h: number;
+  price_change_24h: number;
+  price_change_percentage_24h: number;
+  market_cap_change_24h: number;
+  market_cap_change_percentage_24h: number;
+  circulating_supply: number;
+  total_supply: number;
+  max_supply: number;
+  ath: number;
+  ath_change_percentage: number;
+  ath_date: string;
+  atl: number;
+  atl_change_percentage: number;
+  atl_date: string;
+  roi: Roi | null;
+  last_updated: string;
+  sparkline_in_7d: SparklineIn7d;
+}
+interface Roi {
+  times: number;
+  currency: string;
+  percentage: number;
+}
+interface SparklineIn7d {
+  price: number[];
+}
 
 const Watchlist = () => {
   const [favoriteCoins, setFavoriteCoins] = useState<
     { id: string; name: string; symbol: string }[]
   >([]);
-  const [cryptoData, setCryptoData] = useState<any[]>([]);
+  const [cryptoData, setCryptoData] = useState<CryptoData[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Lade die Favoriten aus dem Local Storage
     const storedFavorites = JSON.parse(
       localStorage.getItem(FAVORITES_KEY) || '[]',
     );
@@ -61,6 +99,9 @@ const Watchlist = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <Head>
+        <title>Merkliste</title>
+      </Head>
       <h1 className="mb-4 text-4xl font-bold text-gray-800 dark:text-white">
         Merkliste
       </h1>

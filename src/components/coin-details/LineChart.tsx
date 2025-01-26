@@ -126,7 +126,7 @@ export default function LineChart({ coinId }: LineChartProps) {
         );
         setChartData(formattedData);
       } catch (error) {
-        //console.error('Fehler beim Abrufen der Chart-Daten:', error);
+        console.error('Fehler beim Abrufen der Chart-Daten:', error);
         setChartData(null);
       } finally {
         setLoading(false);

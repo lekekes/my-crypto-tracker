@@ -9,7 +9,7 @@ interface BurgerMenuProps {
 const BurgerMenu = ({ isOpen, onClick }: BurgerMenuProps) => (
   <button
     onClick={onClick}
-    className="bg-light-background dark:bg-dark-background hover:bg-light-hover dark:hover:bg-dark-hover flex h-10 w-10 items-center justify-center rounded-full text-foreground hover:shadow-lg focus:outline-none md:hidden"
+    className="bg-light-background dark:bg-dark-background flex h-10 w-10 items-center justify-center rounded-full text-foreground hover:bg-light-hover hover:shadow-lg focus:outline-none dark:hover:bg-dark-hover md:hidden"
     aria-label={isOpen ? 'Close menu' : 'Open menu'}
   >
     <FontAwesomeIcon icon={isOpen ? faTimes : faBars} size="lg" />

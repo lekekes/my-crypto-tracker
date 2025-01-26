@@ -11,7 +11,6 @@ interface SparklineChartProps {
 
 export default function SparklineChart({
   data,
-  id,
   borderColor,
 }: SparklineChartProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);

@@ -1,7 +1,7 @@
 // playwright.config.js
 module.exports = {
   timeout: 30000, // Timeout für jeden Test (optional)
-  testDir: './src/test', // Verzeichnis für die Tests
+  testDir: './src/tests', // Verzeichnis für die Tests
   testMatch: '**/*.playwright.test.ts', // Nur Playwright-Testdateien
   use: {
     browserName: 'firefox', // Verwende Chromium (oder Firefox/Webkit)

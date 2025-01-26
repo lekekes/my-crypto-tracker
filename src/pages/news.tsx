@@ -5,6 +5,7 @@ import Button from '../components/Button';
 import Input from '../components/Input';
 import Modal from '../components/Modal';
 import Select from '@/components/Select';
+import Head from 'next/head';
 
 const FILTER_OPTIONS = [
   'Bitcoin',
@@ -15,6 +16,21 @@ const FILTER_OPTIONS = [
   'Blockchain',
   'Crypto',
 ];
+
+interface Source {
+  id?: string | null;
+  name: string;
+}
+interface Article {
+  source: Source;
+  author: string;
+  title: string;
+  description?: string;
+  url: string;
+  urlToImage?: string;
+  publishedAt: string;
+  content: string;
+}
 
 export default function News() {
   const [articles, setArticles] = useState([]);
@@ -46,7 +62,7 @@ export default function News() {
 
       const data = await res.json();
       const validArticles = data.articles.filter(
-        (article: any) =>
+        (article: Article) =>
           article.title &&
           article.description &&
           article.url &&
@@ -121,7 +137,9 @@ export default function News() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <title>News</title>
+      <Head>
+        <title>News</title>
+      </Head>
       <h1 className="mb-6 text-4xl font-extrabold text-gray-800 dark:text-white">
         Krypto-Nachrichten
       </h1>
